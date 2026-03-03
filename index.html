@@ -63,7 +63,8 @@
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 overflow-auto"><!-- Blokir Desktop -->
+ <body class="h-full bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 overflow-auto">
+  <!-- Blokir Desktop -->
   <div id="desktop-block" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
    <div class="bg-white rounded-lg p-8 text-center max-w-sm">
     <div class="text-6xl mb-4">
@@ -74,24 +75,22 @@
     <p class="text-gray-500 text-sm">Silakan buka dari HP Anda untuk melihat nota belanja.</p>
    </div>
   </div>
-  <div id="app-wrapper" class="w-full min-h-full p-4 pb-8">
-   <!-- Header -->
+  <div id="app-wrapper" class="w-full min-h-full p-4 pb-8"><!-- Header -->
    <div class="text-center mb-4">
     <h1 id="main-title" class="text-2xl font-bold text-amber-800">📝 Nota Belanja</h1>
     <p id="shop-name" class="text-amber-600 text-sm">Toko KOBUKe 7</p>
    </div><!-- Receipt Card -->
    <div class="max-w-md mx-auto">
     <div class="zigzag-top" style="background-color: #fef3c7;"></div>
-    <div class="bg-white receipt-pattern shadow-lg px-4 py-5">
-     <!-- Logo -->
-     <div class="text-center mb-4"><img src="https://kobuke-7.vercel.app/logo%20toko.svg" alt="Logo Toko KOBUKe 7" class="h-24 mx-auto mb-2" loading="lazy" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
+    <div class="bg-white receipt-pattern shadow-lg px-4 py-5"><!-- Logo -->
+     <div class="text-center mb-4">
+      <img src="https://kobuke-7.vercel.app/logo%20toko.svg" alt="Logo Toko KOBUKe 7" class="h-24 mx-auto mb-2" loading="lazy" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
      </div><!-- Date & Time -->
      <div class="text-center border-b-2 border-dashed border-gray-300 pb-3 mb-4">
       <p id="current-date" class="text-gray-600 text-sm"></p>
       <p id="current-time" class="text-gray-500 text-xs"></p>
      </div><!-- Items List -->
-     <div id="items-container" class="space-y-3 mb-4">
-      <!-- Items will be rendered here -->
+     <div id="items-container" class="space-y-3 mb-4"><!-- Items will be rendered here -->
      </div><!-- Empty State -->
      <div id="empty-state" class="text-center py-8 hidden">
       <div class="text-5xl mb-3">
@@ -235,7 +234,7 @@
 
     init();
 
-    // Proteksi dari DevTools & Screenshot
+    // Proteksi dari DevTools, Screenshot & Tangkap Layar
     
     // Cegah DevTools
     document.addEventListener('keydown', (e) => {
@@ -278,6 +277,79 @@
       }
     });
 
+    // Cegah tangkap layar pada mobile (Volume Down + Power)
+    let volumeDownPressed = false;
+    let powerPressed = false;
+
+    document.addEventListener('keydown', (e) => {
+      // Deteksi Volume Down (Android)
+      if (e.keyCode === 174 || e.key === 'VolumeDown') {
+        volumeDownPressed = true;
+        e.preventDefault();
+      }
+      // Deteksi Power (Android)
+      if (e.keyCode === 179 || e.key === Power) {
+        powerPressed = true;
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.keyCode === 174 || e.key === 'VolumeDown') {
+        volumeDownPressed = false;
+        e.preventDefault();
+      }
+      if (e.keyCode === 179 || e.key === 'Power') {
+        powerPressed = false;
+        e.preventDefault();
+      }
+    });
+
+    // Blokir hardware screenshot pada iOS & Android
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', () => {
+      lastTouchEnd = Date.now();
+    });
+
+    // Cegah Volume Down + Power (Android Screenshot)
+    setInterval(() => {
+      if (volumeDownPressed && powerPressed) {
+        e.preventDefault();
+      }
+    }, 100);
+
+    // Proteksi dengan overlay saat user mencoba screenshot
+    let isScreenshotAttempt = false;
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // Halaman tidak terlihat - mungkin screenshot
+        isScreenshotAttempt = true;
+        document.body.style.opacity = '0.5';
+        document.body.style.filter = 'blur(10px)';
+        
+        setTimeout(() => {
+          document.body.style.opacity = '1';
+          document.body.style.filter = 'none';
+          isScreenshotAttempt = false;
+        }, 1000);
+      }
+    });
+
+    // Cegah gesture screenshot (3 jari swipe ke atas di iOS)
+    let touchCount = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchCount = e.touches.length;
+      if (touchCount >= 3) {
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (touchCount >= 3) {
+        e.preventDefault();
+      }
+    });
+
     // Monitor DevTools
     const devtools = { open: false };
     const threshold = 160;
@@ -293,5 +365,5 @@
       }
     }, 500);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68c18ea4ae9e29',t:'MTc3MjU0MjExMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68c5f0b3c19e29',t:'MTc3MjU0MjI5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

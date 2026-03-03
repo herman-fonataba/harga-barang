@@ -1,1 +1,297 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOBUKe 7</title>
+  <link rel="icon" href="https://kobuke-7.vercel.app/logo%20toko.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+    .receipt-pattern {
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 20px,
+        rgba(0,0,0,0.02) 20px,
+        rgba(0,0,0,0.02) 21px
+      );
+    }
+    .zigzag-top {
+      background: linear-gradient(-135deg, #ffffff 5px, transparent 0) 0 5px,
+                  linear-gradient(135deg, #ffffff 5px, transparent 0) 0 5px;
+      background-color: transparent;
+      background-position: left top;
+      background-repeat: repeat-x;
+      background-size: 10px 10px;
+      height: 10px;
+      width: 100%;
+    }
+    .zigzag-bottom {
+      background: linear-gradient(-45deg, #ffffff 5px, transparent 0) 0 5px,
+                  linear-gradient(45deg, #ffffff 5px, transparent 0) 0 5px;
+      background-color: transparent;
+      background-position: left bottom;
+      background-repeat: repeat-x;
+      background-size: 10px 10px;
+      height: 10px;
+      width: 100%;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .item-row { animation: slideIn 0.3s ease-out; }
+    .btn-press:active { transform: scale(0.95); }
+    
+    /* Proteksi dari screenshot & inspect */
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -webkit-touch-callout: none;
+      pointer-events: auto;
+    }
+    
+    * {
+      -webkit-user-drag: none;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 overflow-auto"><!-- Blokir Desktop -->
+  <div id="desktop-block" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+   <div class="bg-white rounded-lg p-8 text-center max-w-sm">
+    <div class="text-6xl mb-4">
+     📱
+    </div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Hanya untuk HP</h1>
+    <p class="text-gray-600 mb-4">Nota ini hanya dapat diakses dari perangkat mobile (smartphone).</p>
+    <p class="text-gray-500 text-sm">Silakan buka dari HP Anda untuk melihat nota belanja.</p>
+   </div>
+  </div>
+  <div id="app-wrapper" class="w-full min-h-full p-4 pb-8">
+   <!-- Header -->
+   <div class="text-center mb-4">
+    <h1 id="main-title" class="text-2xl font-bold text-amber-800">📝 Nota Belanja</h1>
+    <p id="shop-name" class="text-amber-600 text-sm">Toko KOBUKe 7</p>
+   </div><!-- Receipt Card -->
+   <div class="max-w-md mx-auto">
+    <div class="zigzag-top" style="background-color: #fef3c7;"></div>
+    <div class="bg-white receipt-pattern shadow-lg px-4 py-5">
+     <!-- Logo -->
+     <div class="text-center mb-4"><img src="https://kobuke-7.vercel.app/logo%20toko.svg" alt="Logo Toko KOBUKe 7" class="h-24 mx-auto mb-2" loading="lazy" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
+     </div><!-- Date & Time -->
+     <div class="text-center border-b-2 border-dashed border-gray-300 pb-3 mb-4">
+      <p id="current-date" class="text-gray-600 text-sm"></p>
+      <p id="current-time" class="text-gray-500 text-xs"></p>
+     </div><!-- Items List -->
+     <div id="items-container" class="space-y-3 mb-4">
+      <!-- Items will be rendered here -->
+     </div><!-- Empty State -->
+     <div id="empty-state" class="text-center py-8 hidden">
+      <div class="text-5xl mb-3">
+       🛒
+      </div>
+      <p class="text-gray-500">Belum ada barang</p>
+      <p class="text-gray-400 text-sm">Tambahkan barang di bawah</p>
+     </div><!-- Divider -->
+     <div class="border-t-2 border-dashed border-gray-300 my-4"></div><!-- Total Section -->
+     <div class="bg-gradient-to-r from-amber-100 to-orange-100 -mx-4 px-4 py-4">
+      <div class="flex justify-between items-center">
+       <div>
+        <p class="text-gray-600 text-sm">Total Barang</p>
+        <p id="item-count" class="text-amber-800 font-semibold">0 item</p>
+       </div>
+       <div class="text-right">
+        <p class="text-gray-600 text-sm">Total Harga</p>
+        <p id="grand-total" class="text-2xl font-bold text-amber-800">Rp 0</p>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="zigzag-bottom" style="background-color: #fef3c7;"></div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      nota_title: 'Nota Belanja',
+      shop_name: 'Toko KOBUKe 7'
+    };
 
+    let config = { ...defaultConfig };
+
+    // Data barang
+    const items = [
+      { nama_barang: 'Pita Pink (1 Roll)', harga: 30000, kuantitas: 1 },
+      { nama_barang: 'Lem Lilin', harga: 4000, kuantitas: 3 },
+      { nama_barang: 'Cellophone Coklat', harga: 20000, kuantitas: 2 },
+      { nama_barang: 'Cellophone Putih', harga: 5000, kuantitas: 2 },
+      { nama_barang: 'Pita Coklat (1 Meter)', harga: 3000, kuantitas: 2 },
+      { nama_barang: 'Beng-Beng', harga: 3000, kuantitas: 2 },
+      { nama_barang: 'Nabati Ahh Keju (14g)', harga: 3000, kuantitas: 2 },
+      { nama_barang: 'Chiki Balls Choco (55gr)', harga: 7000, kuantitas: 1 },
+      { nama_barang: 'Busa Bunga', harga: 10000, kuantitas: 1 },
+      { nama_barang: 'Tusuk Sate', harga: 10000, kuantitas: 1 },
+      { nama_barang: 'Bunga Baby\'s Breath', harga: 16000, kuantitas: 1 }
+    ];
+
+    // Format currency
+    function formatRupiah(num) {
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    // Update date/time
+    function updateDateTime() {
+      document.getElementById('current-date').textContent = 'Jumat, 13 Februari 2026';
+      document.getElementById('current-time').textContent = '13:43:42';
+    }
+
+    // Render items
+    function renderItems() {
+      const container = document.getElementById('items-container');
+      container.innerHTML = '';
+      
+      let grandTotal = 0;
+      let totalItems = 0;
+
+      items.forEach((item) => {
+        const total = item.harga * item.kuantitas;
+        grandTotal += total;
+        totalItems += item.kuantitas;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'item-row border-b border-gray-200 pb-2 mb-2 last:border-b-0';
+        itemEl.innerHTML = `
+          <div class="flex justify-between items-start mb-1">
+            <span class="item-name font-medium text-gray-800 text-sm flex-1 pr-2">${item.nama_barang}</span>
+            <span class="item-total font-semibold text-amber-700 text-sm whitespace-nowrap">${formatRupiah(total)}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs text-gray-600">
+            <div class="flex gap-4">
+              <span class="item-price">${formatRupiah(item.harga)}</span>
+              <span class="item-qty">x${item.kuantitas}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(itemEl);
+      });
+
+      // Update totals
+      document.getElementById('item-count').textContent = `${totalItems} item`;
+      document.getElementById('grand-total').textContent = formatRupiah(grandTotal);
+      document.getElementById('empty-state').classList.add('hidden');
+    }
+
+    // Apply config to UI
+    async function onConfigChange(cfg) {
+      config = { ...defaultConfig, ...cfg };
+      
+      document.getElementById('main-title').textContent = '📝 ' + (config.nota_title || defaultConfig.nota_title);
+      document.getElementById('shop-name').textContent = config.shop_name || defaultConfig.shop_name;
+    }
+
+    // Initialize
+    async function init() {
+      // Cek apakah menggunakan mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const screenWidth = window.innerWidth;
+      
+      if (!isMobile && screenWidth > 768) {
+        // Desktop/Tablet - Blokir
+        document.getElementById('desktop-block').classList.remove('hidden');
+        document.getElementById('app-wrapper').classList.add('hidden');
+        return;
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 60000);
+
+      renderItems();
+
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities: (cfg) => ({
+            recolorables: [],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ['nota_title', cfg.nota_title || defaultConfig.nota_title],
+            ['shop_name', cfg.shop_name || defaultConfig.shop_name]
+          ])
+        });
+      }
+    }
+
+    init();
+
+    // Proteksi dari DevTools & Screenshot
+    
+    // Cegah DevTools
+    document.addEventListener('keydown', (e) => {
+      // F12, Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && e.keyCode === 73) ||
+          (e.ctrlKey && e.shiftKey && e.keyCode === 67) ||
+          (e.ctrlKey && e.shiftKey && e.keyCode === 74)) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // Cegah right-click
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      return false;
+    });
+
+    // Cegah Console
+    const noop = () => false;
+    Object.defineProperty(window, 'console', {
+      get() {
+        return {
+          log: noop,
+          warn: noop,
+          error: noop,
+          info: noop,
+          debug: noop
+        };
+      }
+    });
+
+    // Cegah screenshot dengan Print Screen
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        navigator.clipboard.writeText('');
+        return false;
+      }
+    });
+
+    // Monitor DevTools
+    const devtools = { open: false };
+    const threshold = 160;
+    
+    setInterval(() => {
+      if (window.outerHeight - window.innerHeight > threshold || 
+          window.outerWidth - window.innerWidth > threshold) {
+        if (!devtools.open) {
+          devtools.open = true;
+        }
+      } else {
+        devtools.open = false;
+      }
+    }, 500);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68c18ea4ae9e29',t:'MTc3MjU0MjExMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

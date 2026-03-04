@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KOBUKe 7</title>
+  <title>KOBUKe 8</title>
   <link rel="icon" href="https://kobuke-7.vercel.app/logo%20toko.svg" type="image/svg+xml">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
@@ -78,13 +78,13 @@
   <div id="app-wrapper" class="w-full min-h-full p-4 pb-8"><!-- Header -->
    <div class="text-center mb-4">
     <h1 id="main-title" class="text-2xl font-bold text-amber-800">📝 Nota Belanja</h1>
-    <p id="shop-name" class="text-amber-600 text-sm">Toko KOBUKe 7</p>
+    <p id="shop-name" class="text-amber-600 text-sm">Toko KOBUKe 8</p>
    </div><!-- Receipt Card -->
    <div class="max-w-md mx-auto">
     <div class="zigzag-top" style="background-color: #fef3c7;"></div>
     <div class="bg-white receipt-pattern shadow-lg px-4 py-5"><!-- Logo -->
      <div class="text-center mb-4">
-      <img src="https://kobuke-7.vercel.app/logo%20toko.svg" alt="Logo Toko KOBUKe 7" class="h-24 mx-auto mb-2" loading="lazy" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
+      <img src="https://kobuke-8.vercel.app/logo%20toko.svg" alt="Logo Toko KOBUKe 7" class="h-24 mx-auto mb-2" loading="lazy" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
      </div><!-- Date & Time -->
      <div class="text-center border-b-2 border-dashed border-gray-300 pb-3 mb-4">
       <p id="current-date" class="text-gray-600 text-sm"></p>
@@ -113,14 +113,17 @@
       </div>
      </div>
     </div>
-    <div class="zigzag-bottom" style="background-color: #fef3c7;"></div>
+    <div class="zigzag-bottom" style="background-color: #fef3c7;"></div><!-- Download Button Outside Receipt -->
+    <div class="mt-6">
+     <a href="http://nota%20belanja.png" download="Nota_Belanja_KOBUKe8.png" class="block w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-lg text-center transition-all duration-200 btn-press"> 📥 DOWNLOAD NOTA </a>
+    </div>
    </div>
   </div>
   <script>
     // Default configuration
     const defaultConfig = {
       nota_title: 'Nota Belanja',
-      shop_name: 'Toko KOBUKe 7'
+      shop_name: 'Toko KOBUKe 8'
     };
 
     let config = { ...defaultConfig };
@@ -132,7 +135,7 @@
       { nama_barang: 'Cellophone Coklat', harga: 20000, kuantitas: 2 },
       { nama_barang: 'Cellophone Putih', harga: 5000, kuantitas: 2 },
       { nama_barang: 'Pita Coklat (1 Meter)', harga: 3000, kuantitas: 2 },
-      { nama_barang: 'Beng-Beng', harga: 3000, kuantitas: 2 },
+      { nama_barang: 'Beng-Beng', harga: 3000, kuantitas: 4 },
       { nama_barang: 'Nabati Ahh Keju (14g)', harga: 3000, kuantitas: 2 },
       { nama_barang: 'Chiki Balls Choco (55gr)', harga: 7000, kuantitas: 1 },
       { nama_barang: 'Busa Bunga', harga: 10000, kuantitas: 1 },
@@ -365,5 +368,5 @@
       }
     }, 500);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68c5f0b3c19e29',t:'MTc3MjU0MjI5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d6f65c4d23291b1',t:'MTc3MjYxMTc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
